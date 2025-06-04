@@ -2,6 +2,7 @@ version: 2
 
 project_name: port-user
 
+# Build settings
 builds:
   - id: port-user
     main: ./main.go
@@ -19,44 +20,57 @@ builds:
       - goos: windows
         goarch: arm64
 
+# Archive settings (tar.gz, zip)
 archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+  - id: port-user
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - "./*.txt"
+      - "./LICENSE"
 
+# NFPM settings (deb, rpm)
 nfpms:
-  - id: "linux-package"
-    file_name_template: "{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}"
-    goos: linux
+  - id: linux-package
+    package_name: "{{ .ProjectName }}"
+    file_name_template: "{{ .PackageName }}_{{ .Version }}_{{ .Architecture }}.{{ .Format }}"
     formats:
-      - rpm
       - deb
-    metadata:
-      license: MIT
-      maintainer: Your Name <you@example.com>
-      description: A cross-platform CLI tool to find processes using TCP/UDP ports.
-      vendor: Your Company
+      - rpm
+    license: MIT
+    maintainer: Your Name <you@example.com>
+    description: A cross-platform CLI tool to find processes using TCP/UDP ports.
+    vendor: Your Company
+    dependencies:
+      - systemd
+    conflicts:
+      - old-port-user
+    replaces:
+      - old-port-user
 
-packs:
+# macOS Installer (pkg)
+installers:
   - id: macos-installer
-    format: pkg
-    name_template: "{{ .ProjectName }}-{{ .Version }}-macos-{{ .Arch }}"
-    description: Port-User Utility Installer for macOS
-    scripts:
-      preinstall: assets/scripts/preinstall.sh
-      postinstall: assets/scripts/postinstall.sh
-    targets:
+    # Only run on darwin builds
+    builds:
       - darwin/amd64
       - darwin/arm64
+    type: pkg
+    name_template: "{{ .ProjectName }}-{{ .Version }}-macos-{{ .Arch }}"
+    script: |
+      #!/bin/sh
+      echo "Installing port-user to /usr/local/bin..."
+      mkdir -p /usr/local/bin/
+      cp "$INSTALLER_PATH/port-user" /usr/local/bin/
+      chmod +x /usr/local/bin/port-user
 
+# Docker image (optional)
 dockers:
   - image_templates:
       - "ghcr.io/yourusername/port-user:latest"
       - "ghcr.io/yourusername/port-user:{{ .Tag }}"
 
+# GitHub Release settings
 release:
   draft: false
   disable: false
