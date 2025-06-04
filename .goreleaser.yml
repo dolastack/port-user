@@ -1,0 +1,63 @@
+project_name: port-user
+
+builds:
+  - id: port-user
+    main: ./main.go
+    binary: port-user
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+
+checksum:
+  name_template: 'checksums.txt'
+
+nfpms:
+  - id: "linux-package"
+    file_name_template: "{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}"
+    goos: linux
+    formats:
+      - rpm
+      - deb
+    metadata:
+      license: MIT
+      maintainer: Your Name <you@example.com>
+      description: A cross-platform CLI tool to find processes using TCP/UDP ports.
+      vendor: Your Company
+
+packs:
+  - id: macos-installer
+    format: pkg
+    name_template: "{{ .ProjectName }}-{{ .Version }}-macos-{{ .Arch }}"
+    description: Port-User Utility Installer for macOS
+    scripts:
+      preinstall: assets/scripts/preinstall.sh
+      postinstall: assets/scripts/postinstall.sh
+    targets:
+      - darwin/amd64
+      - darwin/arm64
+
+dockers:
+  - image_templates:
+      - "ghcr.io/dolastack/port-user:latest"
+      - "ghcr.io/dolastack/port-user:{{ .Tag }}"
+
+release:
+  draft: false
+  disable: false
