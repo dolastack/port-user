@@ -1,3 +1,5 @@
+version: '2'
+
 project_name: port-user
 
 builds:
@@ -6,8 +8,8 @@ builds:
     binary: port-user
     goos:
       - linux
-      - windows
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
@@ -24,9 +26,6 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
-
-checksum:
-  name_template: 'checksums.txt'
 
 nfpms:
   - id: "linux-package"
@@ -55,8 +54,8 @@ packs:
 
 dockers:
   - image_templates:
-      - "ghcr.io/dolastack/port-user:latest"
-      - "ghcr.io/dolastack/port-user:{{ .Tag }}"
+      - "ghcr.io/yourusername/port-user:latest"
+      - "ghcr.io/yourusername/port-user:{{ .Tag }}"
 
 release:
   draft: false
