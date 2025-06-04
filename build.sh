@@ -30,6 +30,3 @@ build darwin arm64
 
 # Windows
 build windows amd64 .exe
-
-echo ""
-echo "✅ All builds completed successfully!"

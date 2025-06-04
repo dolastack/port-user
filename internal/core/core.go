@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -46,7 +47,7 @@ func FindPortUnix(ports []int, jsonOutput bool, useColor bool) {
 		lines := strings.Split(string(procsFile), "\n")
 		for i, line := range lines {
 			if i == 0 {
-				continue
+				continue // Skip header
 			}
 			fields := strings.Fields(line)
 			if len(fields) < 10 {
@@ -55,6 +56,7 @@ func FindPortUnix(ports []int, jsonOutput bool, useColor bool) {
 			localAddrPort := fields[1]
 			tcpInode := fields[9]
 
+			// Parse port
 			parts := strings.Split(localAddrPort, ":")
 			if len(parts) != 2 {
 				continue
@@ -67,6 +69,7 @@ func FindPortUnix(ports []int, jsonOutput bool, useColor bool) {
 			}
 			port := int(num)
 
+			// Match against requested ports
 			for _, targetPort := range ports {
 				if port == targetPort {
 					pid := findPIDBySocketInode(tcpInode)
@@ -98,7 +101,7 @@ func FindPortUnix(ports []int, jsonOutput bool, useColor bool) {
 	} else if found {
 		printResults(results, useColor)
 	} else {
-		fmt.Println("No process found using any of the specified ports")
+		printNoProcessFound()
 	}
 }
 
@@ -181,7 +184,7 @@ func FindPortWindows(ports []int, jsonOutput bool, useColor bool) {
 	} else if found {
 		printResults(results, useColor)
 	} else {
-		fmt.Println("No process found using any of the specified ports")
+		printNoProcessFound()
 	}
 }
 
@@ -252,4 +255,39 @@ func getExeNameFromPIDWindows(pid int) string {
 		}
 	}
 	return "unknown"
+}
+
+// isRoot returns true if user has elevated privileges
+func isRoot() bool {
+	if runtime.GOOS == "windows" {
+		// On Windows, try opening a restricted path to detect Admin rights
+		file, err := os.Open("\\\\.\\PHYSICALDRIVE0")
+		if err == nil {
+			_ = file.Close()
+			return true
+		}
+		return false
+	}
+	// On Unix-like systems, root has euid = 0
+	return os.Geteuid() == 0
+}
+
+// printNoProcessFound prints helpful message if no process found
+func printNoProcessFound() {
+	if isRoot() {
+		fmt.Println("No process found using any of the specified ports.")
+		return
+	}
+
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Println("No process found using any of the specified ports.")
+		fmt.Println("💡 Tip: Try running as Administrator for full system access.")
+	case "linux", "darwin":
+		fmt.Println("No process found using any of the specified ports.")
+		fmt.Println("💡 Tip: Try running with sudo for full system access:")
+		fmt.Printf("     sudo ./%s <port>\n", os.Args[0])
+	default:
+		fmt.Println("No process found using any of the specified ports.")
+	}
 }
