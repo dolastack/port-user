@@ -4,12 +4,16 @@ on:
   push:
     tags:
       - 'v*.*.*'
+permissions: # Add this block
+  contents: write
+  packages: write # Optional: if you're also publishing to GitHub Packages
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: Checkout code
