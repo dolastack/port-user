@@ -2,7 +2,15 @@ version: 2
 
 project_name: port-user
 
-# Build settings
+release:
+  draft: false
+  prerelease: false
+  disable: false
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
 builds:
   - id: port-user
     main: ./main.go
@@ -20,16 +28,14 @@ builds:
       - goos: windows
         goarch: arm64
 
-# Archive settings (tar.gz, zip)
 archives:
   - id: port-user
     format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
-      - "./*.txt"
       - "./LICENSE"
+      - "./README.md"
 
-# NFPM settings (deb, rpm)
 nfpms:
   - id: linux-package
     package_name: "{{ .ProjectName }}"
@@ -40,18 +46,9 @@ nfpms:
     license: MIT
     maintainer: Your Name <you@example.com>
     description: A cross-platform CLI tool to find processes using TCP/UDP ports.
-    vendor: Your Company
-    dependencies:
-      - systemd
-    conflicts:
-      - old-port-user
-    replaces:
-      - old-port-user
 
-# macOS Installer (pkg)
 installers:
   - id: macos-installer
-    # Only run on darwin builds
     builds:
       - darwin/amd64
       - darwin/arm64
@@ -63,14 +60,3 @@ installers:
       mkdir -p /usr/local/bin/
       cp "$INSTALLER_PATH/port-user" /usr/local/bin/
       chmod +x /usr/local/bin/port-user
-
-# Docker image (optional)
-dockers:
-  - image_templates:
-      - "ghcr.io/yourusername/port-user:latest"
-      - "ghcr.io/yourusername/port-user:{{ .Tag }}"
-
-# GitHub Release settings
-release:
-  draft: false
-  disable: false
