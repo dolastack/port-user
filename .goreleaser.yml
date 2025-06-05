@@ -35,7 +35,7 @@ archives:
 nfpms:
   - id: linux-package
     package_name: "{{ .ProjectName }}"
-    file_name_template: "{{ .PackageName }}_{{ .Version }}_{{ .Architecture }}.{{ .Format }}"
+    file_name_template: "{{ .PackageName }}_{{ .Version }}_{{ .Arch }}.{{ .Format }}"
     formats:
       - deb
       - rpm
