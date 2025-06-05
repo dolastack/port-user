@@ -7,10 +7,6 @@ release:
   prerelease: false
   disable: false
 
-checksum:
-  name_template: 'checksums.txt'
-  algorithm: sha256
-
 builds:
   - id: port-user
     main: ./main.go
@@ -44,7 +40,7 @@ nfpms:
       - deb
       - rpm
     license: MIT
-    maintainer: Your Name <you@example.com>
+    maintainer: dolastack dolastack@gmail.com
     description: A cross-platform CLI tool to find processes using TCP/UDP ports.
 
 installers:
@@ -60,3 +56,6 @@ installers:
       mkdir -p /usr/local/bin/
       cp "$INSTALLER_PATH/port-user" /usr/local/bin/
       chmod +x /usr/local/bin/port-user
+
+checksum:
+  name_template: "checksums.txt"
