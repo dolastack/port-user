@@ -1,26 +1,26 @@
-name: Build & Release port-user
+# name: Build & Release port-user
 
-on:
-  push:
-    tags:
-      - 'v*.*.*'
+# on:
+#   push:
+#     tags:
+#       - 'v*.*.*'
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.22'
+#       - name: Set up Go
+#         uses: actions/setup-go@v4
+#         with:
+#           go-version: '1.22'
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          version: v2.0.0
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Run GoReleaser
+#         uses: goreleaser/goreleaser-action@v5
+#         with:
+#           version: v2.0.0
+#           args: release --clean
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
