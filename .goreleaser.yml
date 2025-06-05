@@ -44,19 +44,19 @@ nfpms:
     description: A cross-platform CLI tool to find processes using TCP/UDP ports.
 
 # macOS PKG installer (correct section)
-packs:
-  - id: macos-installer
-    builds:
-      - darwin/amd64
-      - darwin/arm64
-    type: pkg
-    name_template: "{{ .ProjectName }}-{{ .Version }}-macos-{{ .Arch }}"
-    script: |
-      #!/bin/sh
-      echo "Installing port-user to /usr/local/bin..."
-      mkdir -p /usr/local/bin/
-      cp "$INSTALLER_PATH/port-user" /usr/local/bin/
-      chmod +x /usr/local/bin/port-user
+# packs:
+#   - id: macos-installer
+#     builds:
+#       - darwin/amd64
+#       - darwin/arm64
+#     type: pkg
+#     name_template: "{{ .ProjectName }}-{{ .Version }}-macos-{{ .Arch }}"
+#     script: |
+#       #!/bin/sh
+#       echo "Installing port-user to /usr/local/bin..."
+#       mkdir -p /usr/local/bin/
+#       cp "$INSTALLER_PATH/port-user" /usr/local/bin/
+#       chmod +x /usr/local/bin/port-user
 
 checksum:
   name_template: "checksums.txt"
