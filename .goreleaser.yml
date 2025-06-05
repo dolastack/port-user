@@ -43,7 +43,8 @@ nfpms:
     maintainer: dolastack dolastack@gmail.com
     description: A cross-platform CLI tool to find processes using TCP/UDP ports.
 
-installers:
+# macOS PKG installer (correct section)
+packs:
   - id: macos-installer
     builds:
       - darwin/amd64
